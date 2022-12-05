@@ -1,0 +1,109 @@
+html {
+    background-color: gray;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+}
+
+.form {
+    background-color: rgb(255, 255, 255);
+    position: relative;
+    height: 100%;
+    width: 100%;
+    visibility: visible;    
+}
+
+.ct {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.abs {
+    position: absolute;
+}
+
+.rel {
+    position: relative;
+}
+
+.flx {
+    display: flex;
+}
+
+.vert {
+    flex-direction: row;
+}
+
+.of {
+    overflow: auto;
+}
+
+.cr3 {
+    border-color: transparent;
+    border-width: 0px;
+    border-radius: 3%;
+}
+
+.cr5 {
+    border-color: transparent;
+    border-width: 0px;
+    border-radius: 5%;
+}
+
+.tr {
+    transform: translate(-50%,0);
+}
+
+.txs {
+    font-size: x-small;
+    color: aqua;
+}
+
+.visible {
+    visibility: visible;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+
+table {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+}
+
+thead {
+    flex: 0 0 auto;
+    background-color: #242424;
+    height: 25px;
+    color: white;
+}
+
+tbody {
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+tr {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+    text-align: center;
+}
+
+#table1 {
+    
+}
