@@ -1,10 +1,10 @@
-// const imgimg = document.querySelector( 'ccc' )
+// var imgimg = document.querySelector( 'ccc' )
 
 // imgimg.addEventListener( 'mousemove', event => {
     
-//     const bb = canvas.getBoundingClientRect();
-//     const x = Math.floor( (event.clientX - bb.left) / bb.width * canvas.width );
-//     const y = Math.floor( (event.clientY - bb.top) / bb.height * canvas.height );
+//     var bb = canvas.getBoundingClientRect();
+//     var x = Math.floor( (event.clientX - bb.left) / bb.width * canvas.width );
+//     var y = Math.floor( (event.clientY - bb.top) / bb.height * canvas.height );
     
 //     console.log({ x, y });
   
@@ -35,27 +35,220 @@ function JS_Alert_Hello(a) {
     });
 }
 
-const loadImg = function(img, url) {
-    return new Promise((resolve, reject) => {
-      img.src = url;
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(img);
-    });
-  };
-  
-  const img1 = new Image();
+eel.expose(JS_Display_Admin);
+function JS_Display_Admin(na,em,nu,us,pa) {
+    document.getElementById("na").innerHTML = "Full Name: " + na;
+    document.getElementById("em").innerHTML = "Email: " + em;
+    document.getElementById("nu").innerHTML = "Contact Number: " + nu;
+    document.getElementById("us").innerHTML = "Username: " + us;
+    document.getElementById("pa").innerHTML = "Password: " + pa;
+}
 
-setTimeout(update, 100);
-function update() {
-    loadImg(img1, "Video.jpg?x=" + new Date().getTime()).then((img) => {
-        if (img.height == 480) {
-            document.getElementById("pic1").src=img.src;
-            setTimeout(update, 100);
-        }
-        else {
-            setTimeout(update, 100);
-        }
-    }).catch((err) => {
-        console.log("Timeput")
+function DisplayRoom(id,string) {
+    document.getElementById("Room_Panel").style.visibility = "visible";
+    document.getElementById("room_id").value = id;
+    document.getElementById("room_name").value = string;
+
+    document.getElementById("Save_Room2").onclick = function() {
+
+        console.log("haha");
+        id = document.getElementById("room_id").value;
+        string = document.getElementById("room_name").value;
+        console.log(id,string);
+        eel.PY_Update_Room_Name(id,string)
+        document.getElementById("Room_Panel").style.visibility = "hidden";
+    }
+}
+
+function Check_In_Display(id,rn) {
+    document.getElementById("Check_In_Panel").style.visibility = "visible";
+    document.getElementById("room_name_to_CI").value = rn;
+    document.getElementById("room_id_to_CI").value = id; 
+}
+
+function Check_In_Hide() {
+    document.getElementById("Check_In_Panel").style.visibility = "hidden";
+}
+
+function Check_In_Rooms() {
+    var rn = document.getElementById("room_name_to_CI").value;
+    var id = document.getElementById("room_id_to_CI").value;
+    var gn = document.getElementById("guest_name_to_CI").value
+    eel.PY_Check_In_Room(id, gn)
+    document.getElementById("Check_In_Panel").style.visibility = "hidden";
+}
+
+function Check_Out_Room(id) {
+    eel.PY_Check_Out_Room(id);
+}
+
+function Cancel1() {
+    document.getElementById("Check_In_Panel").style.visibility = "hidden";
+}
+
+function Cancel2() {
+    document.getElementById("Room_Panel").style.visibility = "hidden";
+}
+
+eel.expose(JS_Display_Rooms);
+function JS_Display_Rooms(array) {
+    cntnt = document.getElementById("Tab2t");
+    cntnt.innerHTML = "";
+
+    array.forEach(element => {
+        var row = document.createElement("tr");
+        let xx = 0;
+        element.forEach(element2 => {
+            var col = document.createElement("td");
+            if (xx == 2) {
+                if (element2 == 0) {
+                    element2 = "Available";
+                    var but = document.createElement("button");
+                    but.innerHTML = "Check In";
+                    but.onclick = function() {
+                        Check_In_Display(element[0],element[1]);
+                    }
+                }
+                else {
+                    element2 = "Checked In";
+                    var but = document.createElement("button");
+                    but.innerHTML = "Check Out";
+                    but.onclick = function() {
+                        Check_Out_Room(element[0]);
+                    }
+                }
+            }
+
+            if (xx == 3) {
+                if (element[2] == 0) {
+                    element2 = "";
+                }
+            }
+
+            if (xx == 3) {
+                if (element2 == 0) {element2 = "";}
+            }
+            
+            
+            if (xx == 2) {col.append(element2); col.append(but);}
+            else {col.innerHTML = element2;}
+            // col.innerHTML = (element2);
+            row.append(col);
+            xx++;
+        });
+        var lastcol = document.createElement("td");
+        var but = document.createElement("button");
+        but.innerHTML = "Edit"
+        but.onclick = function() {
+            DisplayRoom(element[0],element[1]);
+        };
+        lastcol.append(but)
+        row.append(lastcol)
+        document.getElementById("Tab2t").append(row);
     });
+}
+
+function DisplayGuest(array) {
+    document.getElementById("Tab4").style.visibility = "visible";
+    document.getElementById("Tab3").style.visibility = "hidden";
+    document.getElementById("gna").innerHTML = "Full Name: " + array[1];
+    document.getElementById("gem").innerHTML = "Email: " + array[0];
+    document.getElementById("gnu").innerHTML = "Contact Number: " + array[0];
+    document.getElementById("gad").innerHTML = "Address: " + array[0];
+    document.getElementById("grf").innerHTML = "Assigned RFID Card: " + array[0];
+    // document.getElementById("room_id").value = id;
+    // document.getElementById("room_name").value = string;
+
+    // document.getElementById("Save_Room2").onclick = function() {
+
+    //     console.log("haha");
+    //     id = document.getElementById("room_id").value;
+    //     string = document.getElementById("room_name").value;
+    //     console.log(id,string);
+    //     eel.PY_Update_Room_Name(id,string)
+    //     document.getElementById("Room_Panel").style.visibility = "hidden";
+    // }
+}
+
+eel.expose(JS_Display_Guests);
+function JS_Display_Guests(array) {
+    var allg = document.getElementById("guest_name_to_CI");
+    array.forEach(element => {
+        var opt = document.createElement("option");
+        opt.value = element[1];
+        opt.innerHTML = element[1];
+        allg.append(opt)
+        console.log(element[1]);
+    });
+    cntnt = document.getElementById("Tab3t");
+    cntnt.innerHTML = "";
+
+    array.forEach(element => {
+        var row = document.createElement("tr");
+        let xx = 0;
+        element.forEach(element2 => {
+            var col = document.createElement("td");
+            if (xx == 2) {
+                if (element2 == 0) {
+                    element2 = "Not checked in";
+                    // var but = document.createElement("button");
+                    // but.innerHTML = "Check In";
+                    // but.onclick = function() {
+                    //     Check_In_Display(element[0],element[1]);
+                    // }
+                }
+                else {
+                    element2 = "Checked in";
+                    // var but = document.createElement("button");
+                    // but.innerHTML = "Check Out";
+                    // but.onclick = function() {
+                    //     Check_Out_Room(element[0]);
+                    // }
+                }
+            }
+
+            if (xx == 3) {
+                if (element[2] == 0) {
+                    element2 = "";
+                }
+            }
+
+            if (xx == 3) {
+                if (element2 == 0) {element2 = "";}
+            }
+            
+            if (xx == 2) {col.append(element2);}// col.append(but);}
+            else {col.innerHTML = element2;}
+            // col.innerHTML = (element2);
+            row.append(col);
+            xx++;
+        });
+        var lastcol = document.createElement("td");
+        var but = document.createElement("button");
+        but.innerHTML = "Edit"
+        but.onclick = function() {
+            DisplayGuest(element);
+        };
+        lastcol.append(but)
+        row.append(lastcol)
+        document.getElementById("Tab3t").append(row);
+    });
+}
+
+function Profile_Function() {
+    document.getElementById("Tab1").classList.remove("hidden");
+    document.getElementById("Tab2").classList.add("hidden");
+    document.getElementById("Tab3").classList.add("hidden");
+}
+
+function Room_Function() {
+    document.getElementById("Tab1").classList.add("hidden");
+    document.getElementById("Tab2").classList.remove("hidden");
+    document.getElementById("Tab3").classList.add("hidden");
+}
+
+function Guest_Function() {
+    document.getElementById("Tab1").classList.add("hidden");
+    document.getElementById("Tab2").classList.add("hidden");
+    document.getElementById("Tab3").classList.remove("hidden");
 }

@@ -74,6 +74,7 @@ html {
 
 .hidden {
     visibility: hidden;
+    position: absolute;
 }
 
 
@@ -106,4 +107,27 @@ tr {
 
 #table1 {
     
+}
+
+#Room_Panel {
+    border: 1px solid #888;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px 0 rgba(0,0,0,0.5);
+    transform: translate(-50%,-50%);
+}
+
+#Check_In_Panel {
+    border: 1px solid #888;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px 0 rgba(0,0,0,0.5);
+    transform: translate(-50%,-50%);
+}
+
+.trns {
+    transform: translate(-50%,-50%);
+}
+
+.center {
+    align-items: center;
+    justify-content: center;
 }

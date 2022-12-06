@@ -22,33 +22,123 @@
         <input type="text" id="fname" name="fname" style="visibility: hidden" value="0">
         <button id="Hello_Button" class="hidden btn btn-primary btn-sm abs l37 t76 tr"
             onclick="JS_Hello_Button_Function()">CAPTURE</button>
-        <div class="abs l5 t5 w90 h70 of table-responsive">
-            <table className="table table-hover" id="table1">
-                <thead>
-                <tr className="text-center">
-                    <th scope="col">Date</th>
-                    <th scope="col">Time In</th>
-                    <th scope="col">Time Out</th>
-                </tr>
-                </thead>
-                <tbody className="text-center">
-                    <tr>
-                        <td className="font-weight-bold">12/01/22</td>
-                        <td className="font-weight-bold">07:30 AM</td>
-                        <td className="font-weight-bold">07:30 PM</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="abs l5 t85 w90 h10 of table-responsive">
-            <table className="table table-hover" id="table1">
-                <thead>
-                <tr className="text-center">
-                    <th scope="col">Time In:</th>
-                    <th scope="col">Time Out:</th>
-                </tr>
-                </thead>
-            </table>
+        <div class="rel l5 t13 w90 h75 ">
+            <div id="Check_In_Panel"class="abs l50 t50 w30 h40 trns hidden">
+                <p class="abs l2 t2">Check in</p>
+                <div class="flx abs l50 t40 w100 trns center hidden"> 
+                    <label>Room ID:</label>
+                    <input id="room_id_to_CI"></input>
+                </div>
+
+                <div class="flx abs l50 t35 w100 trns center"> 
+                    <label>Room Name:</label>
+                    <input id="room_name_to_CI"></input>
+                </div>
+                
+                <div class="flx abs l50 t50 w100 trns center"> 
+                    <label>Guest Name:</label>
+                    <select id="guest_name_to_CI"></select>
+                </div>
+                <div class="flx abs l50 t80 trns"> 
+                    <button onclick=Cancel1() class="btn btn-secondary btn-sm">Cancel</button>
+                    <button id="Save_Room" onclick=Check_In_Rooms() class="btn btn-primary btn-sm">Save</button>
+                </div>
+            </div>
+            <div id="Room_Panel"class="abs l50 t50 w30 h40 hidden">
+                <p class="abs l2 t2">Room number</p>
+                <div class="flx abs l50 t40 w100 trns center"> 
+                    <label>Room ID:</label>
+                    <input id="room_id"></input>
+                </div>
+                
+                <div class="flx abs l50 t50 w100 trns center"> 
+                    <label>Room Name:</label>
+                    <input id="room_name"></input>
+                </div>
+                <div class="flx abs l50 t80 trns"> 
+                    <button onclick=Cancel2() class="btn btn-secondary btn-sm">Cancel</button>
+                    <button id="Save_Room2" class="btn btn-primary btn-sm">Save</button>
+                </div>
+            </div>
+            <div id="Tabs" class="flx">
+                <button onclick="Profile_Function()">Profile</button>
+                <button onclick="Room_Function()">Room</button>
+                <button onclick="Guest_Function()">Guest</button>
+            </div>
+
+            <div id="Tab1" class="">
+                <strong>User Information</strong>
+                <p id="na">Full Name:</p>
+                <p id="em">Email:</p>
+                <p id="nu">Contact Number</p>
+                <strong>Credentials</strong>
+                <p id="us">Username</p>
+                <p id="pa">Password</p>
+            </div>
+            <div id="Tab4" class="hidden">
+                <strong>Guest Information</strong>
+                <p id="gna">Full Name:</p>
+                <p id="gem">Email:</p>
+                <p id="gnu">Contact Number: </p>
+                <p id="gad">Address: </p>
+                <p id="grf">Assigned RFID Card:</p>
+            </div>
+
+            <div id="Tab2" class="hidden">
+                All Rooms
+                <div class="of table-responsive">
+                    <table className="table table-hover" id="table1">
+                        <thead>
+                        <tr className="text-center">
+                            <th scope="col">Room ID</th>
+                            <th scope="col">Room Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Current Guest</th>
+                            <th scope="col">Date Added</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="Tab2t" className="text-center">
+                            <tr>
+                                <td className="font-weight-bold">12/01/22</td>
+                                <td className="font-weight-bold">07:30 AM</td>
+                                <td className="font-weight-bold">07:30 PM</td>
+                                <td className="font-weight-bold">07:30 PM</td>
+                                <td className="font-weight-bold">07:30 PM</td>
+                                <td className="font-weight-bold">07:30 PM</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="Tab3" class="hidden">
+                All Guests
+                <div class="of table-responsive">
+                    <table className="table table-hover" id="table1">
+                        <thead>
+                        <tr className="text-center">
+                            <th scope="col">Guest ID</th>
+                            <th scope="col">Guest Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Current Room</th>
+                            <th scope="col">Date Added</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="Tab3t" className="text-center">
+                            <tr>
+                                <td className="font-weight-bold">12/01/22</td>
+                                <td className="font-weight-bold">07:30 AM</td>
+                                <td className="font-weight-bold">07:30 PM</td>
+                                <td className="font-weight-bold">07:30 PM</td>
+                                <td className="font-weight-bold">07:30 PM</td>
+                                <td className="font-weight-bold">07:30 PM</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
