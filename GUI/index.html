@@ -22,6 +22,7 @@
         <input type="text" id="fname" name="fname" style="visibility: hidden" value="0">
         <button id="Hello_Button" class="hidden btn btn-primary btn-sm abs l37 t76 tr"
             onclick="JS_Hello_Button_Function()">CAPTURE</button>
+        <label id="RFID_Read" class="abs t95 l80"></label>
         <div class="rel l5 t13 w90 h75 ">
             <div id="Check_In_Panel"class="abs l50 t50 w30 h40 trns hidden">
                 <p class="abs l2 t2">Check in</p>
@@ -76,12 +77,19 @@
                 <p id="pa">Password</p>
             </div>
             <div id="Tab4" class="hidden">
-                <strong>Guest Information</strong>
-                <p id="gna">Full Name:</p>
-                <p id="gem">Email:</p>
-                <p id="gnu">Contact Number: </p>
-                <p id="gad">Address: </p>
-                <p id="grf">Assigned RFID Card:</p>
+                <strong>Guest Information</strong><br>
+                <label for="gna">Full Name         :</label>
+                <input id="gna"></input><br>
+                <label for="gem">Email             :</label>
+                <input id="gem"></input><br>
+                <label for="gnu">Contact Number    : </label>
+                <input id="gnu"></input><br>
+                <label for="gad">Address           : </label>
+                <input id="gad"></input><br>
+                <label for="grf">Assigned RFID Card:</label>
+                <input id="grf"></input><br>
+                <button onclick=Cancel3() class="btn btn-secondary btn-sm">Cancel</button>
+                <button id="Save_Guest" onclick=Save_Guest_Info() class="btn btn-primary btn-sm">Save</button>
             </div>
 
             <div id="Tab2" class="hidden">

@@ -9,6 +9,7 @@
 //     console.log({ x, y });
   
 // });
+var globalToReadRFID = 0;
 
 $(document).ready(function() {
     $("img").on("click", function(event) {
@@ -151,11 +152,12 @@ function JS_Display_Rooms(array) {
 function DisplayGuest(array) {
     document.getElementById("Tab4").style.visibility = "visible";
     document.getElementById("Tab3").style.visibility = "hidden";
-    document.getElementById("gna").innerHTML = "Full Name: " + array[1];
-    document.getElementById("gem").innerHTML = "Email: " + array[0];
-    document.getElementById("gnu").innerHTML = "Contact Number: " + array[0];
-    document.getElementById("gad").innerHTML = "Address: " + array[0];
-    document.getElementById("grf").innerHTML = "Assigned RFID Card: " + array[0];
+    document.getElementById("gna").value = array[1];
+    document.getElementById("gem").value = array[0];
+    document.getElementById("gnu").value = array[0];
+    document.getElementById("gad").value = array[0];
+    document.getElementById("grf").value = array[0];
+    globalToReadRFID = 1;
     // document.getElementById("room_id").value = id;
     // document.getElementById("room_name").value = string;
 
@@ -251,4 +253,22 @@ function Guest_Function() {
     document.getElementById("Tab1").classList.add("hidden");
     document.getElementById("Tab2").classList.add("hidden");
     document.getElementById("Tab3").classList.remove("hidden");
+}
+
+eel.expose(RFID_Read);
+function RFID_Read(st) {
+    document.getElementById("RFID_Read").innerHTML = "RFID READING: " + st
+    if ((globalToReadRFID == 1) && (st.length > 5)) {
+        document.getElementById("grf").value = st;
+    }
+}
+
+function Save_Guest_Info() {
+    gna = document.getElementById("gna").value;
+    gem = document.getElementById("gem").value;
+    gnu = document.getElementById("gnu").value;
+    gad = document.getElementById("gad").value;
+    grf = document.getElementById("grf").value;
+
+    eel.PY_
 }
