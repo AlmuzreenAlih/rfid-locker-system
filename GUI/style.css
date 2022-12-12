@@ -105,15 +105,16 @@ tr {
     text-align: center;
 }
 
-#table1 {
-    
-}
-
 #Room_Panel {
     border: 1px solid #888;
     border-radius: 8px;
     box-shadow: 0 3px 5px 0 rgba(0,0,0,0.5);
     transform: translate(-50%,-50%);
+    background-color: white;
+}
+
+.Panel {
+    background-color: white;
 }
 
 #Check_In_Panel {
@@ -130,4 +131,71 @@ tr {
 .center {
     align-items: center;
     justify-content: center;
+}
+
+#Tabs button {
+    width: 33.33%;
+    margin-bottom: 20px;
+}
+
+#Tabs #Tb1 {
+    border-top-left-radius: 8px;
+}
+
+#Tabs #Tb3 {
+    border-top-right-radius: 8px;
+}
+
+#Panel1 {
+    border: 1px solid #888;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px 0 rgba(0,0,0,0.5)
+}
+
+#Tab1 {
+    padding-left: 30px;
+}
+
+.flex2 {
+    padding: 0px 10px 10px 10px;
+    justify-content: space-between;
+}
+
+#table1,#table2 {
+    padding: 0px 10px 10px 10px;
+}
+
+#table3 {
+    padding: 0px 0px 100px 100px;
+}
+
+.p100 {
+    padding: 0px 0px 100px 100px;
+}
+
+#form2 {
+    background-color: gray;
+}
+
+.flxi {
+    display: flex;
+    flex-direction: column;
+}
+
+.blk {
+    display: flex;
+    flex-direction: row;
+}
+
+#form2 input {
+    border: 1px solid #888;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px 0 rgba(0,0,0,0.5);
+    margin: 5px;
+}
+
+.Card {
+    border: 1px solid #888;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px 0 rgba(0,0,0,0.5)
 }

@@ -1,50 +1,69 @@
-#define Button1 (22)
-#define Button2 (24)
-#define Button3 (26)
-#define Button4 (28)
-#define Button5 (30)
-
-// #define Motor (3)
-
+int Room_ID = 1;
 #include <millisDelay.h>
 millisDelay Timer1;
 
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x27,20,4);
+LiquidCrystal_I2C lcd(0x27,16,2);
+
+#define LED_G 4 //define green LED pin
+#define LED_R 5 //define red LED
+#define BUZZER 2 //buzzer pin
+#define lock 3
+#define Btn 6
+
+#include <Wire.h>
+#include <SPI.h>
+#include <MFRC522.h>
+#define SS_PIN 10
+#define RST_PIN 9
+MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
+MFRC522::MIFARE_Key key; 
+byte nuidPICC[4];
+String RFIDCardNumber;
 
 void setup() {
     Serial.begin(9600);
     //Buttons
-    pinMode(Button1, INPUT_PULLUP);
-    pinMode(Button2, INPUT_PULLUP);
-    pinMode(Button3, INPUT_PULLUP);
-    pinMode(Button4, INPUT_PULLUP);
-    pinMode(Button5, INPUT_PULLUP);
+    pinMode(Btn, INPUT_PULLUP);
 
-    //Relays
-    // pinMode(Motor, OUTPUT); digitalWrite(Motor, HIGH);
-
-    // lcd.init();
-    // lcd.backlight();
+    SPI.begin();      // Initiate  SPI bus
+    rfid.PCD_Init(); 
+    for (byte i = 0; i < 6; i++) { key.keyByte[i] = 0xFF;}
+    pinMode(LED_G, OUTPUT); digitalWrite(LED_G, LOW);
+    pinMode(LED_R, OUTPUT); digitalWrite(LED_R, LOW);
+    pinMode(BUZZER, OUTPUT); digitalWrite(BUZZER, LOW);
+    noTone(BUZZER);
+    pinMode(lock,OUTPUT);digitalWrite(lock,HIGH);
+    lcd.init();
+    lcd.backlight();
+    LCDprint(0,0,"                ");
+    LCDprint(0,1,"                ");
 }
 
 char receivedChar;
+
 void loop() {
     if (Serial.available()) {
         receivedChar = Serial.read();
-             if (receivedChar == '1') {}
+             if (receivedChar == '1') {
+                DoorUnlock();
+             }
         else if (receivedChar == '2') {}
         else if (receivedChar == '3') {}
         else if (receivedChar == '4') {}
     }
     receivedChar = ' ';
 
-    if (digitalRead(Button1) == LOW) {Serial.println("A0456989398793B");delay(1500);}
-    if (digitalRead(Button2) == LOW) {Serial.println("A1243543653466B");delay(1500);}
-    if (digitalRead(Button3) == LOW) {Serial.println("A2346547657564B");delay(1500);}
-    if (digitalRead(Button4) == LOW) {Serial.println("A3547567434645B");delay(1500);}
-    if (digitalRead(Button5) == LOW) {Serial.println("A4657684587686B");delay(1500);}
+    if (digitalRead(Btn) == LOW) {
+        Serial.println("A" + String(Room_ID) + "B");
+        DoorUnlock();
+    }
+
+    if ((rfid.PICC_IsNewCardPresent()) && (rfid.PICC_ReadCardSerial())) {
+        printDec(rfid.uid.uidByte, rfid.uid.size);
+        delay(3000);
+    }
 }
 
 void ToggleLH(long delayings, int relayName) {
@@ -72,6 +91,33 @@ void LCDprint(int x, int y, String z) {
 void LCDClear() {
     LCDprint(0,0,"					");
     LCDprint(0,1,"					");
-    LCDprint(0,2,"					");
-    LCDprint(0,3,"					");
+}
+
+void printDec(byte *buffer, byte bufferSize) {
+  RFIDCardNumber = "";
+  for (byte i = 0; i < bufferSize; i++) {
+    RFIDCardNumber = RFIDCardNumber + buffer[i];
+  }
+    Serial.println("A" + RFIDCardNumber + "," + String(Room_ID) + ",B");
+    delay(500);
+    rfid.PCD_Init(); 
+    for (byte i = 0; i < 6; i++) { key.keyByte[i] = 0xFF;}
+}
+
+void DoorUnlock() {
+    LCDprint(0,0," ACCESS GRANTED "); 
+    LCDprint(0,1," Door Unlocked. "); delay(500);
+
+    digitalWrite(LED_G, HIGH); tone(BUZZER, 2000); delay(100);
+    noTone(BUZZER); delay(50);
+    tone(BUZZER, 2000); delay(100);
+    noTone(BUZZER);
+    digitalWrite(lock,LOW); delay(3000);
+    digitalWrite(lock,HIGH); delay(100);
+
+    digitalWrite(LED_G, LOW);
+    LCDprint(0,0,"  Door Locked   "); 
+    LCDprint(0,1,"                "); delay(500);
+    tone(BUZZER, 2000); delay(100);
+    noTone(BUZZER); delay(50);
 }
