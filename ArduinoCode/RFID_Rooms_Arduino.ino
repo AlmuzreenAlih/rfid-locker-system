@@ -37,7 +37,7 @@ void setup() {
     pinMode(lock,OUTPUT);digitalWrite(lock,HIGH);
     lcd.init();
     lcd.backlight();
-    LCDprint(0,0,"                ");
+    LCDprint(0,0,"  Door Locked   "); 
     LCDprint(0,1,"                ");
 }
 
@@ -46,10 +46,8 @@ char receivedChar;
 void loop() {
     if (Serial.available()) {
         receivedChar = Serial.read();
-             if (receivedChar == '1') {
-                DoorUnlock();
-             }
-        else if (receivedChar == '2') {}
+             if (receivedChar == '1') {DoorUnlock();}
+        else if (receivedChar == '2') {Reject();}
         else if (receivedChar == '3') {}
         else if (receivedChar == '4') {}
     }
@@ -120,4 +118,18 @@ void DoorUnlock() {
     LCDprint(0,1,"                "); delay(500);
     tone(BUZZER, 2000); delay(100);
     noTone(BUZZER); delay(50);
+}
+
+void Reject() {
+    LCDprint(0,0,"Invalid RFID Tag"); 
+    LCDprint(0,1," Access denied  "); delay(500);
+
+    for (int i = 0; i < 3; i++) {
+        digitalWrite(LED_R, HIGH);
+        tone(BUZZER, 1500); delay(500);
+        digitalWrite(LED_R, LOW); noTone(BUZZER); delay(100);
+    }
+    
+    lcd.setCursor(0,1); // column, row
+    lcd.print("   Door Locked   ");
 }

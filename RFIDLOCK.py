@@ -148,8 +148,13 @@ def MainLoop():
     global x, reading, debug
     reading = ""
     # reading = SerialData.readline().decode("utf-8")
+    if keyboard.is_pressed('z'):
+        reading = random.choice(["A25464564,1B"]) #,"A25464564,1B","A35476987,1B","A41435879,1B","A5123476986,1B","A61235428,2B"
+    if keyboard.is_pressed('x'):
+        reading = random.choice(["A35476987,1B"])
     if keyboard.is_pressed('space'):
-        reading = random.choice(["A1B"]) #,"A25464564,1B","A35476987,1B","A41435879,1B","A5123476986,1B","A61235428,2B"
+        reading = random.choice(["A1B"])
+        
     # print(reading)
     if (len(reading)>2):
         Parsed = IF.GetINFO(reading,"A","B")
@@ -175,7 +180,7 @@ def MainLoop():
                 InsertThis1.ClearThis()
                 SerialData.write(bytes("1", "utf-8"))
             elif len(Parsed) < 7:
-                eel.RFID_Read(Parsed[0:-2] + " " + str(Registered_guest[0][1]) + " of Room " + str(Room_id) + " RFID Accept")
+                eel.RFID_Read(Parsed[0:-2] + " " + str(Registered_guest[0][1]) + " of Room " + (Room_id) + " RFID Accept")
                 InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
                 InsertThis1.Add(["room_id",str(Room_id)])
                 InsertThis1.Add(["action","Time Out"])
@@ -183,17 +188,18 @@ def MainLoop():
                 EXECUTE(InsertThis1.PrepareStmt(table="records"))
                 InsertThis1.ClearThis()
             else:
+                SerialData.write(bytes("2", "utf-8"))
                 eel.RFID_Read(Parsed[0:-2] + " RFID Reject")
         else:
-            eel.RFID_Read(Parsed[0:-2] + " Room Not Checked In ")
+            eel.RFID_Read(Parsed[0:-2] + " RFID Not Checked In to room id: " + Room_id)
     threading.Timer(0.1,MainLoop,[]).start()
     
 
 MainLoop()
     
 eel.JS_Display_Admin(Name,Email,Number,Username,Password)
-eel.JS_Display_Rooms(GetAllRooms())
 eel.JS_Display_Guests(GetAllGuests())
+eel.JS_Display_Rooms(GetAllRooms())
 
 #ROOMS
 @eel.expose
