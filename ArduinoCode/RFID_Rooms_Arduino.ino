@@ -39,17 +39,19 @@ void setup() {
     lcd.backlight();
     LCDprint(0,0,"  Door Locked   "); 
     LCDprint(0,1,"                ");
+    Timer1.start(1000);
 }
 
 char receivedChar;
-
+int Printed = 0;
+int Registering = 0;
 void loop() {
     if (Serial.available()) {
         receivedChar = Serial.read();
-             if (receivedChar == '1') {DoorUnlock();}
-        else if (receivedChar == '2') {Reject();}
-        else if (receivedChar == '3') {}
-        else if (receivedChar == '4') {}
+             if (receivedChar == '1') {if (Registering == 0) {DoorUnlock();}}
+        else if (receivedChar == '2') {if (Registering == 0) {Reject();}}
+        else if (receivedChar == '3') {Registering = 1;}
+        else if (receivedChar == '4') {Registering = 0;}
     }
     receivedChar = ' ';
 
@@ -59,8 +61,15 @@ void loop() {
     }
 
     if ((rfid.PICC_IsNewCardPresent()) && (rfid.PICC_ReadCardSerial())) {
-        printDec(rfid.uid.uidByte, rfid.uid.size);
-        delay(3000);
+        if (Timer1.justFinished()) {
+            Printed = 0;
+        }
+        if (Printed == 0) {
+            printDec(rfid.uid.uidByte, rfid.uid.size);
+            Timer1.start(5000);
+            Printed = 1;
+        }
+
     }
 }
 
@@ -97,7 +106,6 @@ void printDec(byte *buffer, byte bufferSize) {
     RFIDCardNumber = RFIDCardNumber + buffer[i];
   }
     Serial.println("A" + RFIDCardNumber + "," + String(Room_ID) + ",B");
-    delay(500);
     rfid.PCD_Init(); 
     for (byte i = 0; i < 6; i++) { key.keyByte[i] = 0xFF;}
 }
@@ -130,6 +138,6 @@ void Reject() {
         digitalWrite(LED_R, LOW); noTone(BUZZER); delay(100);
     }
     
-    lcd.setCursor(0,1); // column, row
-    lcd.print("   Door Locked   ");
+    LCDprint(0,0,"  Door Locked   "); 
+    LCDprint(0,1,"                ");
 }

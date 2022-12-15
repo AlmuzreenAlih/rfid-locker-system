@@ -19,26 +19,26 @@
 
 <body>
     <div id="form1" class="form hidden">
-        <label id="RFID_Read" class="abs t95 l5"></label>
+        <label id="RFID_Read" class="abs t95 l5 hidden"></label>
         <div id="Panel0" class="rel flx flex3 l5 t2 w90 h8 center">
-            <h1>John Jose de la Cruz</h1>
+            <h1 id="welcome">John Jose de la Cruz</h1>
             <button id="Hello_Button" class="bta"
-                onclick="JS_Hello_Button_Function()"><strong>LOGOUT</strong></button>
+                onclick="LogMeOut()"><strong>LOGOUT</strong></button>
         </div>
         <div id="Panel1" class="rel l5 t6 w90 h75">
-            <div id="Check_In_Panel"class="abs l50 t50 w30 h40 trns hidden Panel">
+            <div id="Check_In_Panel"class="abs l50 t50 w30 h25 trns hidden Panel">
                 <p class="abs l2 t2">Check in</p>
                 <div class="flx abs l50 t40 w100 trns center hidden"> 
                     <label>Room ID:</label>
                     <input id="room_id_to_CI"></input>
                 </div>
 
-                <div class="flx abs l50 t35 w100 trns center"> 
+                <div class="flx abs l50 t35 w100 trns center hidden"> 
                     <label>Room Name:</label>
                     <input id="room_name_to_CI"></input>
                 </div>
                 
-                <div class="flx abs l50 t50 w100 trns center"> 
+                <div class="flx abs l50 t50 w100 trns center pb5"> 
                     <label>Guest Name:</label>
                     <select id="guest_name_to_CI"></select>
                 </div>
@@ -47,35 +47,35 @@
                     <button id="Save_Room" onclick=Check_In_Rooms() class="btn btn-primary btn-sm">Save</button>
                 </div>
             </div>
-            <div id="Check_In_Panel2"class="abs l50 t50 w30 h40 trns hidden Panel">
-                <p class="abs l2 t2">Check in</p>
+            <div id="Check_In_Panel2"class="abs l50 t50 w30 h25 trns hidden Panel">
+                <p class="abs l2 t2">Check in to room</p>
                 <div class="flx abs l50 t40 w100 trns center hidden"> 
-                    <label>Room ID:</label>
-                    <input id="room_id_to_CI2"></input>
+                    <label>Guest ID:</label>
+                    <input id="guest_id_to_CI2"></input>
                 </div>
 
-                <div class="flx abs l50 t35 w100 trns center"> 
-                    <label>Room Name:</label>
-                    <input id="room_name_to_CI2"></input>
+                <div class="flx abs l50 t35 w100 trns center hidden"> 
+                    <label>Guest Name:</label>
+                    <input id="guest_name_to_CI2"></input>
                 </div>
                 
-                <div class="flx abs l50 t50 w100 trns center"> 
-                    <label>Guest Name:</label>
-                    <select id="guest_name_to_CI2"></select>
+                <div class="flx abs l50 t50 w100 trns center pb5"> 
+                    <label>Room Name:</label>
+                    <select id="room_name_to_CI2"></select>
                 </div>
                 <div class="flx abs l50 t80 trns"> 
                     <button onclick=Cancel1A() class="btn btn-secondary btn-sm">Cancel</button>
                     <button id="Save_Room" onclick=Check_In_Rooms2() class="btn btn-primary btn-sm">Save</button>
                 </div>
             </div>
-            <div id="Room_Panel"class="abs l50 t50 w30 h40 hidden Panel">
+            <div id="Room_Panel"class="abs l50 t50 w30 h25 trns hidden Panel">
                 <p class="abs l2 t2">Room number</p>
                 <div class="flx abs l50 t40 w100 trns center hidden"> 
                     <label>Room ID:</label>
                     <input id="room_id"></input>
                 </div>
                 
-                <div class="flx abs l50 t50 w100 trns center"> 
+                <div class="flx abs l50 t50 w100 trns center pb5"> 
                     <label>Room Name:</label>
                     <input id="room_name"></input>
                 </div>
@@ -85,10 +85,10 @@
                 </div>
             </div>
 
-            <div id="Add_Room_Panel"class="abs l50 t50 w30 h40 hidden Panel">
+            <div id="Add_Room_Panel"class="abs l50 t50 w30 h25 hidden Panel">
                 <p class="abs l2 t2">Room number</p>
                 
-                <div class="flx abs l50 t50 w100 trns center"> 
+                <div class="flx abs l50 t50 w100 trns center  pb5"> 
                     <label>Room Name:</label>
                     <input id="room_name2"></input>
                 </div>

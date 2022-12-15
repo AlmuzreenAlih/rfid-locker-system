@@ -109,20 +109,8 @@ tbody tr:nth-child(odd){
   background-color: rgb(220, 220, 220);
 }
 
-#Room_Panel {
-    width: min-content;
-    border: 2px solid #888;
-    border-radius: 8px;
-    box-shadow: 0 3px 5px 0 rgba(0,0,0,0.5);
-    transform: translate(-50%,-50%);
-    background-color: white;
-}
-
 .Panel {
     background-color: white;
-}
-
-#Check_In_Panel {
     border: 1px solid #888;
     border-radius: 8px;
     box-shadow: 0 3px 5px 0 rgba(0,0,0,0.5);
@@ -194,6 +182,10 @@ tbody tr:nth-child(odd){
 
 #table3 {
     padding: 0px 0px 100px 100px;
+}
+
+.pb5 {
+    padding-bottom: 5px;
 }
 
 .p100 {

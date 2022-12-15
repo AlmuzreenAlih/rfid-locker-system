@@ -1,7 +1,6 @@
 {
-    "port": "COM3",
-    "configuration": "cpu=atmega2560",
-    "board": "arduino:avr:mega",
+    "port": "COM9",
+    "board": "arduino:avr:uno",
     "programmer": "arduino:avrispmkii",
     "sketch": "ArduinoCode\\RFID_Rooms_Arduino.ino"
 }

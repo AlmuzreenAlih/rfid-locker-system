@@ -8,7 +8,7 @@ import keyboard
 import serial
 import ImportantFunctions as IF
 # SerialData = serial.Serial("/dev/ttyUSB0", 9600, timeout = 0.2)
-SerialData = serial.Serial("com3", 9600, timeout = 0.2)
+SerialData = serial.Serial("com9", 9600, timeout = 0.2)
 SerialData.setDTR(False)
 time.sleep(1)
 SerialData.flushInput()
@@ -105,7 +105,6 @@ def Get_Guest_Records(id):
     print(stmt)
     cur.execute(stmt)
     rows = cur.fetchall()
-    print(rows)
     return rows
 
 def GET_S(Table, ID, Is):
@@ -120,7 +119,7 @@ def GET_S(Table, ID, Is):
 def UPDATE_S(Table, Field, Value, ID, Is):
     global db
     cur = db.cursor()
-    stmt = "UPDATE " + Table + " SET " + Field + " = '" + Value + "' WHERE " + ID + " = " + str(Is) + ";"
+    stmt = "UPDATE " + Table + " SET " + Field + " = '" + str(Value) + "' WHERE " + ID + " = " + str(Is) + ";"
     print(stmt)
     cur.execute(stmt)
     db.commit()
@@ -145,15 +144,15 @@ def GetGuestOfRoom(id):
     return rows
 
 def MainLoop():
-    global x, reading, debug
+    global x, reading, debug, RegisterMode
     reading = ""
-    # reading = SerialData.readline().decode("utf-8")
-    if keyboard.is_pressed('z'):
-        reading = random.choice(["A25464564,1B"]) #,"A25464564,1B","A35476987,1B","A41435879,1B","A5123476986,1B","A61235428,2B"
-    if keyboard.is_pressed('x'):
-        reading = random.choice(["A35476987,1B"])
-    if keyboard.is_pressed('space'):
-        reading = random.choice(["A1B"])
+    reading = SerialData.readline().decode("utf-8")
+    # if keyboard.is_pressed('z'):
+    #     reading = random.choice(["A25464564,1B"]) #,"A25464564,1B","A35476987,1B","A41435879,1B","A5123476986,1B","A61235428,2B"
+    # if keyboard.is_pressed('x'):
+    #     reading = random.choice(["A35476987,1B"])
+    # if keyboard.is_pressed('space'):
+    #     reading = random.choice(["A1B"])
         
     # print(reading)
     if (len(reading)>2):
@@ -167,39 +166,47 @@ def MainLoop():
             Room_id = Parsed
             Registered_guest = GetGuestOfRoom(Room_id)
         
-        print(Parsed,RFID_Reading,Room_id,Registered_guest)
+        # print(Parsed,RFID_Reading,Room_id,Registered_guest)
         if len(Registered_guest) > 0:
             # print(repr(Registered_guest[0][8]),repr(RFID_Reading))
             if RFID_Reading == Registered_guest[0][8]:
-                eel.RFID_Read(Parsed[0:-2] + " " + str(Registered_guest[0][1]) + " of Room " + str(Room_id) + " RFID Accept")
-                InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
-                InsertThis1.Add(["room_id",str(Room_id)])
-                InsertThis1.Add(["action","Time In"])
-                InsertThis1.Add(["timestamp",str(int(time.time()))])
-                EXECUTE(InsertThis1.PrepareStmt(table="records"))
-                InsertThis1.ClearThis()
+                eel.RFID_Read(RFID_Reading + " " + str(Registered_guest[0][1]) + " of room id = " + str(Room_id) + " RFID Accept")
+                if RegisterMode == 0:
+                    InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
+                    InsertThis1.Add(["room_id",str(Room_id)])
+                    InsertThis1.Add(["action","Time In"])
+                    InsertThis1.Add(["timestamp",str(int(time.time()))])
+                    EXECUTE(InsertThis1.PrepareStmt(table="records"))
+                    InsertThis1.ClearThis()
                 SerialData.write(bytes("1", "utf-8"))
             elif len(Parsed) < 7:
-                eel.RFID_Read(Parsed[0:-2] + " " + str(Registered_guest[0][1]) + " of Room " + (Room_id) + " RFID Accept")
-                InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
-                InsertThis1.Add(["room_id",str(Room_id)])
-                InsertThis1.Add(["action","Time Out"])
-                InsertThis1.Add(["timestamp",str(int(time.time()))])
-                EXECUTE(InsertThis1.PrepareStmt(table="records"))
+                eel.RFID_Read(RFID_Reading + " " + str(Registered_guest[0][1]) + " of room id = " + (Room_id) + " RFID Accept")
+                if RegisterMode == 0:
+                    InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
+                    InsertThis1.Add(["room_id",str(Room_id)])
+                    InsertThis1.Add(["action","Time Out"])
+                    InsertThis1.Add(["timestamp",str(int(time.time()))])
+                    EXECUTE(InsertThis1.PrepareStmt(table="records"))
                 InsertThis1.ClearThis()
             else:
                 SerialData.write(bytes("2", "utf-8"))
-                eel.RFID_Read(Parsed[0:-2] + " RFID Reject")
+                eel.RFID_Read(RFID_Reading + " RFID Reject")
         else:
-            eel.RFID_Read(Parsed[0:-2] + " RFID Not Checked In to room id: " + Room_id)
+            eel.RFID_Read(RFID_Reading + " RFID but room id = " + Room_id + " does not have a guest.")
+            SerialData.write(bytes("2", "utf-8"))
+            print("sent")
+            
+            
     threading.Timer(0.1,MainLoop,[]).start()
     
 
 MainLoop()
     
 eel.JS_Display_Admin(Name,Email,Number,Username,Password)
-eel.JS_Display_Guests(GetAllGuests())
-eel.JS_Display_Rooms(GetAllRooms())
+eel.JS_SendRoomsAndGuests(GetAllRooms(),GetAllGuests())
+eel.JS_DisplayRoomsAndGuests()
+# eel.JS_Display_Guests(GetAllGuests())
+# eel.JS_Display_Rooms(GetAllRooms())
 
 #ROOMS
 @eel.expose
@@ -209,8 +216,10 @@ def PY_Add_Room(na):
     InsertThis1.Add(["guest_id","0"])
     InsertThis1.Add(["created_timestamp",str(int(time.time()))])
     EXECUTE(InsertThis1.PrepareStmt(table="rooms"))
-    eel.JS_Display_Rooms(GetAllRooms())
-    eel.JS_Display_Guests(GetAllGuests())
+    # eel.JS_Display_Rooms(GetAllRooms())
+    # eel.JS_Display_Guests(GetAllGuests())
+    eel.JS_SendRoomsAndGuests(GetAllRooms(),GetAllGuests())
+    eel.JS_DisplayRoomsAndGuests()
     InsertThis1.ClearThis()
     
 @eel.expose
@@ -218,17 +227,31 @@ def PY_Update_Room_Name(id,string):
     global Name,Email,Number,Username,Password
     print(id,string)
     UPDATE_S("rooms", "name", string ,"id ",id)
-    eel.JS_Display_Rooms(GetAllRooms())
-    eel.JS_Display_Guests(GetAllGuests())
+    # eel.JS_Display_Rooms(GetAllRooms())
+    # eel.JS_Display_Guests(GetAllGuests())
+    eel.JS_SendRoomsAndGuests(GetAllRooms(),GetAllGuests())
+    eel.JS_DisplayRoomsAndGuests()
     
 @eel.expose
 def PY_Check_Out_Room(id):
+    guest_id = GET_S("guests", "room ",str(id))[0][0]
+    guest_id = str(guest_id)
+    
     UPDATE_S("rooms","status","0","id ", id)
     UPDATE_S("rooms","guest_id","0","id ", id)
     UPDATE_S("guests","status","0","room ", id)
     UPDATE_S("guests","room","0","room ", id)
-    eel.JS_Display_Rooms(GetAllRooms())
-    eel.JS_Display_Guests(GetAllGuests())
+    
+    InsertThis1.Add(["guest_id",str(guest_id)])
+    InsertThis1.Add(["room_id",str(id)])
+    InsertThis1.Add(["action","Check Out"])
+    InsertThis1.Add(["timestamp",str(int(time.time()))])
+    EXECUTE(InsertThis1.PrepareStmt(table="records"))
+    InsertThis1.ClearThis()
+    # eel.JS_Display_Rooms(GetAllRooms())
+    # eel.JS_Display_Guests(GetAllGuests())
+    eel.JS_SendRoomsAndGuests(GetAllRooms(),GetAllGuests())
+    eel.JS_DisplayRoomsAndGuests()
     
 @eel.expose
 def PY_Check_In_Room(room_id, guest_name):
@@ -240,8 +263,17 @@ def PY_Check_In_Room(room_id, guest_name):
     UPDATE_S("rooms","guest_id",guest_id,"id ", room_id)
     UPDATE_S("guests","status","1","id ", guest_id)
     UPDATE_S("guests","room",room_id,"id ", guest_id)
-    eel.JS_Display_Rooms(GetAllRooms())
-    eel.JS_Display_Guests(GetAllGuests())
+    
+    InsertThis1.Add(["guest_id",str(guest_id)])
+    InsertThis1.Add(["room_id",str(room_id)])
+    InsertThis1.Add(["action","Check In"])
+    InsertThis1.Add(["timestamp",str(int(time.time()))])
+    EXECUTE(InsertThis1.PrepareStmt(table="records"))
+    InsertThis1.ClearThis()
+    # eel.JS_Display_Rooms(GetAllRooms())
+    # eel.JS_Display_Guests(GetAllGuests())
+    eel.JS_SendRoomsAndGuests(GetAllRooms(),GetAllGuests())
+    eel.JS_DisplayRoomsAndGuests()
 
 #GUEST
 @eel.expose
@@ -255,8 +287,10 @@ def PY_InsertGuest(fn,em,pn,ad,rf):
     InsertThis1.Add(["address",ad])
     InsertThis1.Add(["rfid",rf])
     EXECUTE(InsertThis1.PrepareStmt(table="guests"))
-    eel.JS_Display_Rooms(GetAllRooms())
-    eel.JS_Display_Guests(GetAllGuests())
+    # eel.JS_Display_Rooms(GetAllRooms())
+    # eel.JS_Display_Guests(GetAllGuests())
+    eel.JS_SendRoomsAndGuests(GetAllRooms(),GetAllGuests())
+    eel.JS_DisplayRoomsAndGuests()
     InsertThis1.ClearThis()
 
 @eel.expose
@@ -267,14 +301,31 @@ def PY_UpdateGuest(id,fn,em,pn,ad,rf):
     UpdateThis1.Add(["address",ad])
     UpdateThis1.Add(["rfid",rf])
     EXECUTE(UpdateThis1.PrepareStmt(table="guests",fieldID="id",ID=id))
-    eel.JS_Display_Rooms(GetAllRooms())
-    eel.JS_Display_Guests(GetAllGuests())
+    # eel.JS_Display_Rooms(GetAllRooms())
+    # eel.JS_Display_Guests(GetAllGuests())
+    eel.JS_SendRoomsAndGuests(GetAllRooms(),GetAllGuests())
+    eel.JS_DisplayRoomsAndGuests()
     UpdateThis1.ClearThis()
 
 @eel.expose
 def PY_Get_Guest_Records(id):
     print("Records")
     eel.JS_Display_Records(Get_Guest_Records(id))
+
+RegisterMode = 0
+@eel.expose
+def PY_Registering():
+    global RegisterMode
+    RegisterMode = 1
+    SerialData.write(bytes("3", "utf-8"))
+    print("Rego")
+    
+@eel.expose
+def PY_Unregistering():
+    global RegisterMode
+    RegisterMode = 0
+    SerialData.write(bytes("4", "utf-8"))
+    
 
 # # eel.start('index.html',geometry={'size': (200, 100), 'position': (0, 0)})
 eel.start('index.html', mode='chrome', cmdline_args=['--start-maximized'])
