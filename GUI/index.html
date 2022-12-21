@@ -21,7 +21,7 @@
 <body>
     <div id="form1" class="form hidden">
         <label id="RFID_Read" class="abs t95 l5 hidden"></label>
-        <div id="Panel0" class="rel flx flex3 l5 t2 w90 h8 center">
+        <div id="Panel0" class="rel flx flex4 l5 t2 w90 h8 center">
             <h1 id="welcome">John Jose de la Cruz</h1>
             <button id="Hello_Button" class="bta"
                 onclick="LogMeOut()"><strong>LOGOUT</strong></button>
@@ -44,7 +44,7 @@
                     <select id="guest_name_to_CI"></select>
                 </div>
                 <div class="flx abs l50 t80 trns"> 
-                    <button onclick=Cancel1() class="btn btn-secondary btn-sm">Cancel</button>
+                    <button onclick=Cancel1() class="btn btn-secondary btn-sm pr10">Cancel</button>
                     <button id="Save_Room" onclick=Check_In_Rooms() class="btn btn-primary btn-sm">Save</button>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                     <select id="room_name_to_CI2"></select>
                 </div>
                 <div class="flx abs l50 t80 trns"> 
-                    <button onclick=Cancel1A() class="btn btn-secondary btn-sm">Cancel</button>
+                    <button onclick=Cancel1A() class="btn btn-secondary btn-sm pr10">Cancel</button>
                     <button id="Save_Room" onclick=Check_In_Rooms2() class="btn btn-primary btn-sm">Save</button>
                 </div>
             </div>
@@ -81,7 +81,7 @@
                     <input id="room_name"></input>
                 </div>
                 <div class="flx abs l50 t80 trns flex2"> 
-                    <button onclick=Cancel2() class="btn btn-secondary btn-sm">Cancel</button>
+                    <button onclick=Cancel2() class="btn btn-secondary btn-sm pr10">Cancel</button>
                     <button id="Save_Room2" class="btn btn-primary btn-sm">Save</button>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                     <input id="room_name2"></input>
                 </div>
                 <div class="flx abs l50 t80 trns"> 
-                    <button onclick=Cancel4() class="btn btn-secondary btn-sm">Cancel</button>
+                    <button onclick=Cancel4() class="btn btn-secondary btn-sm pr10">Cancel</button>
                     <button onclick=Save_Room3() id="Save_Room3" class="btn btn-primary btn-sm">Save</button>
                 </div>
             </div>
@@ -187,8 +187,8 @@
             </div>
 
             <div id="Tab4" class="hidden">
-                <div id="tab4inside" class="flx flex2 of">
-                    <div>
+                <div id="tab4inside" class="flx flex3 of">
+                    <div id="guestInfoblock" class="pr10">
                         <strong>Guest Information</strong><br>
                         <label for="gna">Full Name         :</label>
                         <input id="gna"></input><br>
@@ -204,7 +204,7 @@
                         <input id="pcnt" /><br>
                         <label id="Birth" for="birthday">Birthdate:</label>
                         <span class="flx blk">
-                            <input type="date" id="bthy" onChange=birthC()>
+                            <input class="pr10" type="date" id="bthy" onChange=birthC()>
                             <div id="age"></div>
                         </span>
                         <label for="gec">Emergency Contact Person:</label>
@@ -213,7 +213,7 @@
                         <input id="gecn" /><br>
 
                         <input id="gid" class="hidden"></input><br>
-                        <button onclick=Cancel3() class="btn btn-secondary btn-sm">Cancel</button>
+                        <button onclick=Cancel3() class="btn btn-secondary btn-sm pr10">Cancel</button>
                         <button id="Save_Guest" onclick=Save_Guest_Info() class="btn btn-primary btn-sm">Save</button>
                     </div>
                     <div>
@@ -242,14 +242,14 @@
     </div>
 
     <div id="form2" class="form" >
-        <form action="" class="abs l50 t50 w30 h50 trns flxi center Card">
+        <form action="" class="abs l50 t50 w30 h50 trns flxi center Card1">
             <br>
             <strong>SMARTLOCK: Admin Page</strong> <br>
-            <label for="Username">USERNAME: </label>
+            <label for="Username">Username: </label>
             <input id="Username" type="text"> <br>
-            <label for="Password">PASSWORD: </label>
+            <label for="Password">Password: </label>
             <input id="Password" type="password"><br>
-            <button class="btA" onclick=SubmitLogin() type="button">SUBMIT</button><br>
+            <button class="btA w35" onclick=SubmitLogin() type="button">SUBMIT</button><br>
         </form>
     </div>
     <div id="IDB" class="abs l50 t50 trns flxi of Card2 z100 hidden">

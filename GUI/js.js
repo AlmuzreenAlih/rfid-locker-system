@@ -200,6 +200,7 @@ function Display_Add_Room_Tab() {
 }
 function Save_Room3() {
     string = document.getElementById("room_name2").value;
+    if (string == "") {DialogBox("Error", "Please, input field"); return;}
     var Exist = 0;
     GlobalRooms.forEach(element => {
         if (string == element[1]) {DialogBox("Error", "Room name already exist"); Exist = 1;}
@@ -388,6 +389,7 @@ function JS_Display_Records(array) {
             var col = document.createElement("td");
             if (xx == 0) { col.style.display = "none"; }
             if (xx == 2) {
+                row.style.backgroundColor = "rgb(245, 245, 245)";
                 if (element2 == previous) {row.style.display = "none";}
                 else {previous = element2;}
             }

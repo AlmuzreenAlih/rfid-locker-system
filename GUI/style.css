@@ -172,7 +172,12 @@ tbody tr:nth-child(odd){
 }
 
 .flex3 {
-    padding: 5px;
+    padding: 5px 10px 10px 10px;
+    justify-content: flex-start;
+}
+
+.flex4 {
+    padding-right: 7px;
     justify-content: space-between;
 }
 
@@ -181,19 +186,25 @@ tbody tr:nth-child(odd){
 }
 
 #table3 {
-    padding: 0px 0px 100px 100px;
+}
+
+#bthy {
+    width: 230px;
 }
 
 .pb5 {
     padding-bottom: 5px;
 }
 
+.pr10 {
+    margin-right: 7px;
+}
+
 .p100 {
-    padding: 0px 0px 100px 100px;
 }
 
 #form2 {
-    background-color: gray;
+    background-color: rgb(210, 210, 210);
 }
 
 .flxi {
@@ -211,16 +222,35 @@ tbody tr:nth-child(odd){
     overflow: auto;
 }
 
-#form2 input {
-    border: 1px solid #888;
-    border-radius: 8px;
-    box-shadow: 0 3px 5px 0 rgba(0,0,0,0.5);
-    margin: 5px;
+#guestInfoblock {
+    /* background-color: blue; */
+    width: 300px;
 }
 
-.Card {
+#guestInfoblock input{
+    /* background-color: blue; */
+    width: 300px;
+}
+
+#form2 input {
     border: 1px solid #888;
-    border-radius: 8px;
+    border-radius: 2px;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,0.5);
+    margin: 5px;
+    width:90%;
+
+}
+
+#form2 label {
+    width:90%;
+    /* background-color: blue; */
+    text-align: left;
+}
+
+.Card1 {
+    background-color: white;
+    border: 1px solid #888;
+    border-radius: 20px;
     box-shadow: 0 3px 5px 0 rgba(0,0,0,0.5)
 }
 
