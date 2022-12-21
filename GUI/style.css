@@ -44,7 +44,7 @@ html {
 }
 
 .of {
-    overflow: auto;
+    /* overflow: auto; */
 }
 
 .cr3 {
@@ -82,6 +82,7 @@ table {
     display: flex;
     flex-flow: column;
     width: 100%;
+    
 }
 
 thead {
@@ -94,7 +95,6 @@ thead {
 tbody {
     flex: 1 1 auto;
     display: block;
-    overflow-y: auto;
     overflow-x: hidden;
 }
 
@@ -206,6 +206,11 @@ tbody tr:nth-child(odd){
     flex-direction: row;
 }
 
+#tab4inside {
+    height: 400px;
+    overflow: auto;
+}
+
 #form2 input {
     border: 1px solid #888;
     border-radius: 8px;
@@ -226,7 +231,12 @@ tbody tr:nth-child(odd){
 }
 
 .tbl50 {
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
+    height: 59vh;
+}
+
+.tbl51 {
+    /* overflow-y: scroll; */
     height: 70vh;
 }
 
@@ -278,3 +288,25 @@ tbody tr:nth-child(odd){
     margin-right: 10px;
     margin-bottom: 5px;
 }
+
+::-webkit-scrollbar {
+    height: 7px;
+    width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #6c757d; 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(50,50,50); 
+  }

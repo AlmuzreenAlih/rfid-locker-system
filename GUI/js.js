@@ -16,7 +16,7 @@ function timeConverter(UNIX_timestamp) {
     var hour = a.getHours();
     var min = a.getMinutes();
     var sec = a.getSeconds();
-    var time = month + ' ' + date + ", " + year + ' ' + hour + ':' + min + ':' + sec;
+    var time = month + ' ' + date + ", " + year + ' ' + ('0'  + hour).slice(-2) + ':' + ('0'  + min).slice(-2) + ':' + ('0'  + sec).slice(-2);
     return time;
 }
 console.log(timeConverter(0));
@@ -38,22 +38,28 @@ function JS_Display_Admin(na, em, nu, us, pa) {
     use = us;
     pas = pa;
     document.getElementById("welcome").innerHTML = na;
-    document.getElementById("na").innerHTML = "Full Name: " + na;
-    document.getElementById("em").innerHTML = "Email: " + em;
-    document.getElementById("nu").innerHTML = "Contact Number: " + nu;
-    document.getElementById("us").innerHTML = "Username: " + us;
-    document.getElementById("pa").innerHTML = "Password: " + pa;
+    // document.getElementById("na").innerHTML = "Full Name: " + na;
+    // document.getElementById("em").innerHTML = "Email: " + em;
+    // document.getElementById("nu").innerHTML = "Contact Number: " + nu;
+    // document.getElementById("us").innerHTML = "Username: " + us;
+    // document.getElementById("pa").innerHTML = "Password: " + pa;
+    document.getElementById("na").value = na;
+    document.getElementById("em").value = em;
+    document.getElementById("nu").value = nu;
+    document.getElementById("us").value = us;
+    document.getElementById("pa").value = pa;
 }
 
 function SubmitLogin() {
     if ((document.getElementById("Username").value == use) && (document.getElementById("Password").value == pas)) {
-        DialogBox("Information Dialog", "Login Success...");
+        DialogBox("Information Dialog", "Login Success");
         document.getElementById("form2").classList.add("hidden");
         document.getElementById("form1").classList.remove("hidden");
     }
     else {
         // alert("Wrong username or password."+document.getElementById("Username").value+" "+use+" "+document.getElementById("Password")+" "+pas);
-        alert("Wrong username or password.");
+        // alert("Wrong username or password.");
+        DialogBox("Information Dialog", "Wrong username or password.");
     }
 }
 
@@ -133,6 +139,7 @@ function JS_Display_Rooms() {
             if (xx == 0) {
                 col.style.width = "10%";
             }
+            if (xx == 1) {}
             if (xx == 2) {
                 if (element2 == 0) {
                     element2 = "Available";
@@ -142,6 +149,7 @@ function JS_Display_Rooms() {
                     but.onclick = function () {
                         Check_In_Display(element[0], element[1]);
                     }
+                    but.style.width = "99%";
                 }
                 else {
                     element2 = "Checked In";
@@ -151,7 +159,9 @@ function JS_Display_Rooms() {
                     but.onclick = function () {
                         Check_Out_Room(element[0]);
                     }
+                    but.style.width = "99%";
                 }
+                col.style.width = "10%";
             }
 
             if (xx == 3) {
@@ -161,6 +171,7 @@ function JS_Display_Rooms() {
                         if (element3[0] == element2) {element2 = element3[1];}
                     });
                 }
+                col.style.width = "30%";
             }
             if (xx == 4) { element2 = timeConverter(element2) }
 
@@ -177,6 +188,7 @@ function JS_Display_Rooms() {
         but.onclick = function () {
             Edit_Room(element[0], element[1]);
         };
+        // lastcol.style.width = "8%";
         lastcol.append(but)
         row.append(lastcol)
         document.getElementById("Tab2t").append(row);
@@ -299,6 +311,31 @@ function Cancel4() {
     document.getElementById("Add_Room_Panel").style.visibility = "hidden"
 }
 
+
+
+// JavaScript function to convert the birthday to a Julian day number
+function convertToJulianDay(birthday) {
+    const parts = birthday.split('-');
+    const year = parts[0];
+    const month = parts[1].padStart(2, '0');
+    const day = parts[2].padStart(2, '0');
+    return `${month}${day}${year}`;
+  }
+  
+function julianDayToDate(dateString) {
+    const month = dateString.slice(0, 2);
+    const day = dateString.slice(2, 4);
+    const year = dateString.slice(4);
+    return `${year}-${month}-${day}`
+}
+
+function birthC() {
+    var dob = document.getElementById("bthy").value;
+    var dateOfBirth = moment(dob, "YYYY-MM-DD");
+    var ageInYears = moment().diff(dateOfBirth, 'years');
+    // if (ageInYears > 0) {ageInYears = "Age: " + ageInYears + " years old"}
+    document.getElementById("age").innerHTML = "Age: " + ageInYears;
+}
 function DisplayGuest(array) {
     eel.PY_Registering();
     document.getElementById("Tb1").disabled = true;
@@ -312,6 +349,11 @@ function DisplayGuest(array) {
     document.getElementById("gad").value = array[7];
     document.getElementById("grf").value = array[8];
     document.getElementById("gid").value = array[0];
+    document.getElementById("pcnt").value = array[9];
+    document.getElementById("bthy").value = julianDayToDate(array[10]);
+    document.getElementById("gec").value = array[11];
+    document.getElementById("gecn").value = array[12];
+    birthC();
     eel.PY_Get_Guest_Records(array[0]);
     globalToReadRFID = 1;
 }
@@ -329,6 +371,8 @@ function DisplayGuest2() {
     document.getElementById("gad").value = "";
     document.getElementById("grf").value = "";
     document.getElementById("gid").value = "";
+    document.getElementById("pcnt").value = "";
+    document.getElementById("bthy").value = "";
     globalToReadRFID = 2;
 }
 
@@ -390,15 +434,18 @@ function JS_Display_Guests() {
             if (xx == 0) {
                 col.style.width = "10%";
             }
+            if (xx == 1) {col.style.width = "30%";}
             if (xx == 2) {
                 if (element2 == 0) {
-                    element2 = "Not checked in";
+                    element2 = "Available";
                     var but = document.createElement("button");
                     but.classList.add("btB")
                     but.innerHTML = "Check In";
                     but.onclick = function() {
                         Check_In_Display2(element[0],element[1]);
                     }
+                    but.style.width = "99%";
+
                 }
                 else {
                     element2 = "Checked in";
@@ -408,11 +455,15 @@ function JS_Display_Guests() {
                     but.onclick = function() {
                         Check_Out_Room(element[3]);
                     }
+                    but.style.width = "99%";
                 }
+                col.style.width = "10%";
             }
 
             if (xx == 3) { if (element[2] == 0) { element2 = ""; } }
-            if (xx == 3) { if (element2 == 0) { element2 = ""; } }
+            if (xx == 3) { if (element2 == 0) { element2 = ""; } 
+                // col.style.width = "10%";
+            }
 
             if (xx == 4) { element2 = timeConverter(element2) }
             if ((xx > 4)) { col.style.display = "none"; }
@@ -429,6 +480,7 @@ function JS_Display_Guests() {
         but.onclick = function () {
             DisplayGuest(element);
         };
+        // lastcol.style.width = "8%";
         lastcol.append(but)
         row.append(lastcol)
         document.getElementById("Tab3t").append(row);
@@ -436,7 +488,7 @@ function JS_Display_Guests() {
 }
 
 function validateName(name){
-    var regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
+    var regName = /^[a-zA-Z]+( [a-zA-Z]+)+$/;
     if(!regName.test(name)){
         return false;
     } else {
@@ -453,13 +505,49 @@ function validateEmail(mail){
     }
 }
 
-function validateRf(grf,gna) {
+function validateRf(grf,gid) {
     var detection = 0;
     GlobalGuests.forEach(element => {
-        if ((grf == element[8]) && (gna != element[1])) {detection = 1;}
+        if ((grf == element[8]) && (gid != element[0])) {detection = 1;}
     });
     if (detection == 1) {return false;}
     return true;
+}
+
+function Save_Admin(){
+    na = document.getElementById("na").value;
+    em = document.getElementById("em").value;
+    nu = document.getElementById("nu").value;
+    us = document.getElementById("us").value;
+    pa = document.getElementById("pa").value;
+
+    eel.PY_Save_Admin(na,em,nu,us,pa);
+
+    DialogBox("Information Box", "User Information and Credentials updated successfully.")
+}
+
+function ValidateNumber(phn) {
+    var phnformat = /^(09|\+639)\d{9}$/;
+    if(!phnformat.test(phn)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function validatePeople(n) {
+    if (n > 4) {return false;}
+    return true
+}
+
+function validateBTHY(n) {
+    alert(n)
+    var dateformat = /^\d{4}-\d{2}-\d{2}$/;
+    if(!dateformat.test(n)) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 function Save_Guest_Info() {
@@ -469,14 +557,24 @@ function Save_Guest_Info() {
     gad = document.getElementById("gad").value;
     grf = document.getElementById("grf").value;
     gid = document.getElementById("gid").value;
+    pcnt = document.getElementById("pcnt").value;
+    bthy1 = document.getElementById("bthy").value;
+    bthy = convertToJulianDay(bthy1);
+    gec = document.getElementById("gec").value;
+    gecn = document.getElementById("gecn").value;
 
     if ((gna=="") || (gem=="") || (gnu=="") || (gad=="") || (grf=="")) {DialogBox("Error","All fields are required"); return;}
     if (validateName(gna) == false) {DialogBox("Error","Name not valid."); return;}
     if (validateEmail(gem) == false) {DialogBox("Error","email not valid."); return;}
-    if (validateRf(grf,gna) == false) {DialogBox("Error","rfid is registered with another user."); return;}
-    
+    if (validateRf(grf,gid) == false) {DialogBox("Error","rfid is registered with another user."); return;}
+    if (ValidateNumber(gnu) == false) {DialogBox("Error", "Contact Number is not a valid Philippine phone number."); return} 
+    if (validatePeople(pcnt) == false) {DialogBox("Error", "People should not be more than 4."); return}
+    if (validateBTHY(bthy1) == false) {DialogBox("Error", "Date is not in the correct format."); return}
+    if (validateName(gec) == false) {DialogBox("Error", "Emergency Contact Person's name is not valid."); return}
+    if (ValidateNumber(gecn) == false) {DialogBox("Error", "Emergency Contact Number is not a valid Philippine phone number."); return}
+
     if (globalToReadRFID == 2) {
-        eel.PY_InsertGuest(gna, gem, gnu, gad, grf)
+        eel.PY_InsertGuest(gna, gem, gnu, gad, grf,pcnt, bthy, gec, gecn)
         document.getElementById("Tab4").style.visibility = "hidden"
         document.getElementById("Tab3").classList.remove("hidden");
         eel.PY_Unregistering();
@@ -485,7 +583,7 @@ function Save_Guest_Info() {
         document.getElementById("Tb3").disabled = false;
     }
     else if (globalToReadRFID == 1) {
-        eel.PY_UpdateGuest(gid, gna, gem, gnu, gad, grf)
+        eel.PY_UpdateGuest(gid, gna, gem, gnu, gad, grf,pcnt, bthy, gec, gecn)
         document.getElementById("Tab4").style.visibility = "hidden"
         document.getElementById("Tab3").classList.remove("hidden");
         eel.PY_Unregistering();
@@ -571,3 +669,17 @@ $(document).ready(function () {
 // }();
 
 // document.addEventListener('contextmenu', event => event.preventDefault());
+
+document.addEventListener('keydown', function(event) {
+    if (event.keyCode === 13) {
+        // document.getElementById("form2").classList.add("hidden")
+        // alert(document.getElementById("form2").style.visibility)
+      if (!document.getElementById("form2").classList.contains('hidden')) {
+        SubmitLogin(); return;
+      }
+      if (!document.getElementById("IDB").classList.contains('hidden')) {
+        DialogBoxClose();
+      }
+    }
+  });
+  

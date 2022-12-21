@@ -1,14 +1,13 @@
 import random
 import sqlite3
 import time
-import cv2
 import threading
 import eel
 import keyboard
 import serial
 import ImportantFunctions as IF
 # SerialData = serial.Serial("/dev/ttyUSB0", 9600, timeout = 0.2)
-SerialData = serial.Serial("com9", 9600, timeout = 0.2)
+SerialData = serial.Serial("com3", 9600, timeout = 0.2)
 SerialData.setDTR(False)
 time.sleep(1)
 SerialData.flushInput()
@@ -76,13 +75,14 @@ class UpdateThis:
 
 eel.init('GUI')
 
-Name = "John Jose de la Cruz"
-Email = "jjdlc1960@gmail.com"
-Number = "0990991811"
-Username = "adminjj"
-Password = "admindlc"
-
 db = sqlite3.connect("RFID_Database.db", check_same_thread=False)
+
+def GetAdminInfo():
+    global db
+    cur = db.cursor()
+    cur.execute("SELECT * FROM user ORDER by _rowid_")
+    rows = cur.fetchall()
+    return rows[0]
 
 def GetAllRooms():
     global db
@@ -131,6 +131,15 @@ def EXECUTE(stmt):
     cur.execute(stmt)
     db.commit()
 
+AdminInfos = GetAdminInfo()
+
+Name = AdminInfos[0] #"John Jose de la Cruz"
+Email = AdminInfos[1] #"jjdlc1960@gmail.com"
+Number = AdminInfos[2] #"0990991811"
+Username = AdminInfos[3] # "adminjj"
+Password = AdminInfos[4] #"admindlc"
+AdminInfo= [Name,Email,Number,Username,Password]
+
 InsertThis1 = InsertThis()
 UpdateThis1 = UpdateThis()
 
@@ -144,7 +153,7 @@ def GetGuestOfRoom(id):
     return rows
 
 def MainLoop():
-    global x, reading, debug, RegisterMode
+    global x, reading, debug, RegisterMode, AdminInfo
     reading = ""
     reading = SerialData.readline().decode("utf-8")
     # if keyboard.is_pressed('z'):
@@ -171,6 +180,11 @@ def MainLoop():
             # print(repr(Registered_guest[0][8]),repr(RFID_Reading))
             if RFID_Reading == Registered_guest[0][8]:
                 eel.RFID_Read(RFID_Reading + " " + str(Registered_guest[0][1]) + " of room id = " + str(Room_id) + " RFID Accept")
+                SerialData.write(bytes("1", "utf-8"))
+                time.sleep(1)
+                SerialData.write(bytes("!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]), "utf-8"))
+                time.sleep(2)
+                SerialData.write(bytes(","+str(Registered_guest[0][1]) + " timed in the room@_", "utf-8"))
                 if RegisterMode == 0:
                     InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
                     InsertThis1.Add(["room_id",str(Room_id)])
@@ -178,9 +192,13 @@ def MainLoop():
                     InsertThis1.Add(["timestamp",str(int(time.time()))])
                     EXECUTE(InsertThis1.PrepareStmt(table="records"))
                     InsertThis1.ClearThis()
-                SerialData.write(bytes("1", "utf-8"))
             elif len(Parsed) < 7:
                 eel.RFID_Read(RFID_Reading + " " + str(Registered_guest[0][1]) + " of room id = " + (Room_id) + " RFID Accept")
+                SerialData.write(bytes("1", "utf-8"))
+                time.sleep(1)
+                SerialData.write(bytes("!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]), "utf-8"))
+                time.sleep(2)
+                SerialData.write(bytes(","+str(Registered_guest[0][1]) + " timed out the room@_", "utf-8"))
                 if RegisterMode == 0:
                     InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
                     InsertThis1.Add(["room_id",str(Room_id)])
@@ -191,9 +209,22 @@ def MainLoop():
             else:
                 SerialData.write(bytes("2", "utf-8"))
                 eel.RFID_Read(RFID_Reading + " RFID Reject")
+                time.sleep(1)
+                SerialData.write(bytes("!"+str(AdminInfo[2])+"@Hello "+str(AdminInfo[0]), "utf-8"))
+                time.sleep(2)
+                SerialData.write(bytes(",Someone enteres room id="+str(Room_id), "utf-8"))
+                time.sleep(2)
+                SerialData.write(bytes(" with an invalid card@_", "utf-8"))
+                
         else:
             eel.RFID_Read(RFID_Reading + " RFID but room id = " + Room_id + " does not have a guest.")
             SerialData.write(bytes("2", "utf-8"))
+            time.sleep(1)
+            SerialData.write(bytes("!"+str(AdminInfo[2])+"@Hello "+str(AdminInfo[0]), "utf-8"))
+            time.sleep(2)
+            SerialData.write(bytes(",Someone enteres room id="+str(Room_id), "utf-8"))
+            time.sleep(2)
+            SerialData.write(bytes(" with an invalid card@_", "utf-8"))
             print("sent")
             
             
@@ -277,7 +308,7 @@ def PY_Check_In_Room(room_id, guest_name):
 
 #GUEST
 @eel.expose
-def PY_InsertGuest(fn,em,pn,ad,rf):
+def PY_InsertGuest(fn,em,pn,ad,rf,pcnt,bthy, gec, gecn):
     InsertThis1.Add(["name",fn])
     InsertThis1.Add(["status","0"])
     InsertThis1.Add(["room","0"])
@@ -286,6 +317,10 @@ def PY_InsertGuest(fn,em,pn,ad,rf):
     InsertThis1.Add(["contact_number",pn])
     InsertThis1.Add(["address",ad])
     InsertThis1.Add(["rfid",rf])
+    InsertThis1.Add(["people",str(pcnt)])
+    InsertThis1.Add(["birthday",str(bthy)])
+    InsertThis1.Add(["emergency",str(gec)])
+    InsertThis1.Add(["emergency_no",str(gecn)])
     EXECUTE(InsertThis1.PrepareStmt(table="guests"))
     # eel.JS_Display_Rooms(GetAllRooms())
     # eel.JS_Display_Guests(GetAllGuests())
@@ -294,12 +329,30 @@ def PY_InsertGuest(fn,em,pn,ad,rf):
     InsertThis1.ClearThis()
 
 @eel.expose
-def PY_UpdateGuest(id,fn,em,pn,ad,rf):
+def PY_Save_Admin(na,em,nu,us,pa):
+    global AdminNumber
+    UpdateThis1.Add(["Name",na])
+    UpdateThis1.Add(["Email",em])
+    UpdateThis1.Add(["Number",nu])
+    UpdateThis1.Add(["Username",us])
+    UpdateThis1.Add(["Password",pa])
+    EXECUTE(UpdateThis1.PrepareStmt(table="user",fieldID="id",ID="0"))
+    UpdateThis1.ClearThis()
+    AdminNumber = nu
+    
+    eel.JS_Display_Admin(na,em,nu,us,pa)
+
+@eel.expose
+def PY_UpdateGuest(id,fn,em,pn,ad,rf,pcnt,bthy,gec, gecn):
     UpdateThis1.Add(["name",fn])
     UpdateThis1.Add(["email",em])
     UpdateThis1.Add(["contact_number",pn])
     UpdateThis1.Add(["address",ad])
     UpdateThis1.Add(["rfid",rf])
+    UpdateThis1.Add(["people",str(pcnt)])
+    UpdateThis1.Add(["birthday",str(bthy)])
+    UpdateThis1.Add(["emergency",str(gec)])
+    UpdateThis1.Add(["emergency_no",str(gecn)])
     EXECUTE(UpdateThis1.PrepareStmt(table="guests",fieldID="id",ID=id))
     # eel.JS_Display_Rooms(GetAllRooms())
     # eel.JS_Display_Guests(GetAllGuests())

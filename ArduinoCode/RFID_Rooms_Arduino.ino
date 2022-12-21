@@ -1,3 +1,6 @@
+#include <SoftwareSerial.h>
+SoftwareSerial MySerial(7, 8);
+
 int Room_ID = 1;
 #include <millisDelay.h>
 millisDelay Timer1;
@@ -37,6 +40,14 @@ void setup() {
     pinMode(lock,OUTPUT);digitalWrite(lock,HIGH);
     lcd.init();
     lcd.backlight();
+    MySerial.begin(9600);
+    MySerial.listen();
+    MySerial.print("AT\r"); delay(1000);
+    MySerial.print("ATE0"); delay(1000);
+    MySerial.print("AT+CMEE=2\r"); delay(1000);
+    MySerial.print("AT+CMGF=1\r"); delay(1000); //Because we want to send the SMS in text mode
+    MySerial.print("AT+CMGDA=\"DEL ALL\"\r"); //Because we want to send the SMS in text mode
+
     LCDprint(0,0,"  Door Locked   "); 
     LCDprint(0,1,"                ");
     Timer1.start(1000);
@@ -45,13 +56,44 @@ void setup() {
 char receivedChar;
 int Printed = 0;
 int Registering = 0;
+String AccString = "";
+int Accumulating = 0;
+int ind1;
+int ind2;
+
 void loop() {
     if (Serial.available()) {
         receivedChar = Serial.read();
-             if (receivedChar == '1') {if (Registering == 0) {DoorUnlock();}}
-        else if (receivedChar == '2') {if (Registering == 0) {Reject();}}
-        else if (receivedChar == '3') {Registering = 1;}
-        else if (receivedChar == '4') {Registering = 0;}
+        if (receivedChar == '_') {
+            Accumulating = 0;
+            String PN = "";
+            String MSG = "";
+            ind1 = AccString.indexOf('@');  //finds location of first ,
+            PN = AccString.substring(0, ind1);   //captures first data String
+            ind2 = AccString.indexOf('@', ind1+1 );   //finds location of second ,
+            MSG = AccString.substring(ind1+1, ind2+1); 
+            LCDprint(0,0,"N-" + PN + " MSG"); 
+            LCDprint(0,1,"-" + MSG.substring(0,14)); 
+            // digitalWrite(LED_R,HIGH);
+            SendMSG2(PN,MSG);
+            LCDprint(0,0,"  Message Sent  ");
+            LCDprint(0,1,"                "); 
+            delay(3000);
+            LCDprint(0,0,"  Door Locked   "); 
+            LCDprint(0,1,"                ");
+        }
+        if (Accumulating == 1) {
+            AccString = AccString + receivedChar;
+            // if (AccString.length() > 10) {AccString = "";}
+            // LCDprint(0,0,AccString); 
+        }
+        else {
+                if (receivedChar == '1') {if (Registering == 0) {DoorUnlock();}}
+            else if (receivedChar == '2') {if (Registering == 0) {Reject();}}
+            else if (receivedChar == '3') {Registering = 1;}
+            else if (receivedChar == '4') {Registering = 0;}
+            else if (receivedChar == '!') {Accumulating = 1;}
+        }
     }
     receivedChar = ' ';
 
@@ -140,4 +182,16 @@ void Reject() {
     
     LCDprint(0,0,"  Door Locked   "); 
     LCDprint(0,1,"                ");
+}
+
+void SendMSG2(String PhoneNumber, String Msg) {
+    MySerial.print("AT+CMGF=1\r"); delay(500); //Because we want to send the SMS in text mode
+    MySerial.print("AT+CMGS=\"" + PhoneNumber + "\"\r"); //to be sent to the number specified.
+    delay(1000);
+    MySerial.print(Msg);
+    MySerial.println();
+
+    delay(1000);
+    MySerial.write(0x1A);  //Equivalent to sending Ctrl+Z
+    delay(8000);
 }
