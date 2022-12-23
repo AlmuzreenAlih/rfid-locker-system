@@ -7,7 +7,7 @@ millisDelay Timer1;
 
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x27,16,2);
+LiquidCrystal_I2C lcd(0x27,20,4);
 
 #define LED_G 4 //define green LED pin
 #define LED_R 5 //define red LED
@@ -60,7 +60,7 @@ String AccString = "";
 int Accumulating = 0;
 int ind1;
 int ind2;
-
+int yy = 0;
 void loop() {
     if (Serial.available()) {
         receivedChar = Serial.read();
@@ -74,6 +74,12 @@ void loop() {
             MSG = AccString.substring(ind1+1, ind2+1); 
             LCDprint(0,0,"N-" + PN + " MSG"); 
             LCDprint(0,1,"-" + MSG.substring(0,14)); 
+            // LCDprint(0,2,MSG.substring(14,14+16)); 
+            // LCDprint(0,3,MSG.substring(14+16,14+16+16)); 
+            // LCDprint(0,0,MSG.substring(0,20)); 
+            // LCDprint(0,1,MSG.substring(20,40)); 
+            // LCDprint(0,2,MSG.substring(40,60)); 
+            // LCDprint(0,3,MSG.substring(60,80)); 
             // digitalWrite(LED_R,HIGH);
             SendMSG2(PN,MSG);
             LCDprint(0,0,"  Message Sent  ");
@@ -83,35 +89,38 @@ void loop() {
             LCDprint(0,1,"                ");
         }
         if (Accumulating == 1) {
+            // if (AccString.length() > 19) {LCDprint(0,yy,AccString); yy = yy + 1; AccString = "";}
+            // else if (yy == 3) {LCDprint(0,yy,AccString);}
             AccString = AccString + receivedChar;
-            // if (AccString.length() > 10) {AccString = "";}
-            // LCDprint(0,0,AccString); 
+             
         }
         else {
                 if (receivedChar == '1') {if (Registering == 0) {DoorUnlock();}}
             else if (receivedChar == '2') {if (Registering == 0) {Reject();}}
             else if (receivedChar == '3') {Registering = 1;}
             else if (receivedChar == '4') {Registering = 0;}
-            else if (receivedChar == '!') {Accumulating = 1;}
+            else if (receivedChar == '!') {Accumulating = 1; AccString = "";}            
         }
     }
     receivedChar = ' ';
 
     if (digitalRead(Btn) == LOW) {
         Serial.println("A" + String(Room_ID) + "B");
-        DoorUnlock();
+        delay(1000);
     }
 
-    if ((rfid.PICC_IsNewCardPresent()) && (rfid.PICC_ReadCardSerial())) {
-        if (Timer1.justFinished()) {
-            Printed = 0;
-        }
-        if (Printed == 0) {
-            printDec(rfid.uid.uidByte, rfid.uid.size);
-            Timer1.start(5000);
-            Printed = 1;
-        }
+    if (Accumulating == 0) {
+        if ((rfid.PICC_IsNewCardPresent()) && (rfid.PICC_ReadCardSerial())) {
+            if (Timer1.justFinished()) {
+                Printed = 0;
+            }
+            if (Printed == 0) {
+                printDec(rfid.uid.uidByte, rfid.uid.size);
+                Timer1.start(5000);
+                Printed = 1;
+            }
 
+        }
     }
 }
 

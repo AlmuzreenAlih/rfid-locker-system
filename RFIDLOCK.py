@@ -152,6 +152,18 @@ def GetGuestOfRoom(id):
     rows = cur.fetchall()
     return rows
 
+def divide(string, N):
+    # Initialize a list to store the divisions
+    divisions = []
+
+    # Divide the string into separate parts
+    for i in range(0, len(string), N):
+        divisions.append(string[i:i+N])
+
+    return divisions
+
+
+
 def MainLoop():
     global x, reading, debug, RegisterMode, AdminInfo
     reading = ""
@@ -181,10 +193,13 @@ def MainLoop():
             if RFID_Reading == Registered_guest[0][8]:
                 eel.RFID_Read(RFID_Reading + " " + str(Registered_guest[0][1]) + " of room id = " + str(Room_id) + " RFID Accept")
                 SerialData.write(bytes("1", "utf-8"))
-                time.sleep(1)
-                SerialData.write(bytes("!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]), "utf-8"))
-                time.sleep(2)
-                SerialData.write(bytes(","+str(Registered_guest[0][1]) + " timed in the room@_", "utf-8"))
+                time.sleep(5)
+                stringToSend = "!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]) + ","+str(Registered_guest[0][1]) + " timed in the room@_"
+                for i in divide(stringToSend,20):
+                    print(i)
+                    SerialData.write(bytes(i, "utf-8"))
+                    time.sleep(0.5)
+                
                 if RegisterMode == 0:
                     InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
                     InsertThis1.Add(["room_id",str(Room_id)])
@@ -194,11 +209,15 @@ def MainLoop():
                     InsertThis1.ClearThis()
             elif len(Parsed) < 7:
                 eel.RFID_Read(RFID_Reading + " " + str(Registered_guest[0][1]) + " of room id = " + (Room_id) + " RFID Accept")
+                print("!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]))
+                print(","+str(Registered_guest[0][1]) + " timed in the room@_")
                 SerialData.write(bytes("1", "utf-8"))
-                time.sleep(1)
-                SerialData.write(bytes("!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]), "utf-8"))
-                time.sleep(2)
-                SerialData.write(bytes(","+str(Registered_guest[0][1]) + " timed out the room@_", "utf-8"))
+                time.sleep(5)
+                stringToSend = "!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]) + ","+str(Registered_guest[0][1]) + " timed out the room@_"
+                for i in divide(stringToSend,20):
+                    print(i)
+                    SerialData.write(bytes(i, "utf-8"))
+                    time.sleep(0.5)
                 if RegisterMode == 0:
                     InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
                     InsertThis1.Add(["room_id",str(Room_id)])
