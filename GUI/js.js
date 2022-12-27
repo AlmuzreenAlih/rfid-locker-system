@@ -193,6 +193,10 @@ function JS_Display_Rooms() {
         row.append(lastcol)
         document.getElementById("Tab2t").append(row);
     });
+
+    document.getElementById("tablee1").style.height = document.getElementById("Panel1").offsetHeight
+    - document.getElementById("tablee1A").offsetHeight - document.getElementById("tablee1A").offsetHeight ;
+    document.getElementById("tablee1").style.padding = "10px";
 }
 
 function Display_Add_Room_Tab() {
@@ -312,8 +316,6 @@ function Cancel4() {
     document.getElementById("Add_Room_Panel").style.visibility = "hidden"
 }
 
-
-
 // JavaScript function to convert the birthday to a Julian day number
 function convertToJulianDay(birthday) {
     const parts = birthday.split('-');
@@ -410,7 +412,9 @@ function JS_Display_Records(array) {
         document.getElementById("Tab4t").append(row);
     });
 
-    // document.getElementById("table3").offsetHeight = 800;
+    document.getElementById("tab4inside").style.height = document.getElementById("Panel1").offsetHeight
+    - document.getElementById("tablee2A").offsetHeight - Math.round(0.5*document.getElementById("tablee2A").offsetHeight);
+    document.getElementById("tab4inside").style.padding = "10px";
 }
 
 function JS_Display_Guests() {
@@ -487,6 +491,10 @@ function JS_Display_Guests() {
         row.append(lastcol)
         document.getElementById("Tab3t").append(row);
     });
+
+    document.getElementById("tablee2").style.height = document.getElementById("Panel1").offsetHeight
+    - document.getElementById("tablee2A").offsetHeight - document.getElementById("tablee2A").offsetHeight ;
+    document.getElementById("tablee2").style.padding = "10px";
 }
 
 function validateName(name){

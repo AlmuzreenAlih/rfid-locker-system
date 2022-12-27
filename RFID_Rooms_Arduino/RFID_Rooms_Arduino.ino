@@ -1,5 +1,5 @@
 #include <SoftwareSerial.h>
-SoftwareSerial MySerial(7, 8);
+SoftwareSerial MySerial(2, 3);
 
 int Room_ID = 1;
 #include <millisDelay.h>
@@ -9,11 +9,11 @@ millisDelay Timer1;
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27,20,4);
 
-#define LED_G 4 //define green LED pin
-#define LED_R 5 //define red LED
-#define BUZZER 2 //buzzer pin
-#define lock 3
-#define Btn 6
+#define LED_G 6 //define green LED pin
+#define LED_R 7 //define red LED
+#define BUZZER 4 //buzzer pin
+#define lock 5
+#define Btn 8
 
 #include <Wire.h>
 #include <SPI.h>

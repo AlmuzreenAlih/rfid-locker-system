@@ -194,11 +194,6 @@ def MainLoop():
                 eel.RFID_Read(RFID_Reading + " " + str(Registered_guest[0][1]) + " of room id = " + str(Room_id) + " RFID Accept")
                 SerialData.write(bytes("1", "utf-8"))
                 time.sleep(5)
-                stringToSend = "!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]) + ","+str(Registered_guest[0][1]) + " timed in the room@_"
-                for i in divide(stringToSend,20):
-                    print(i)
-                    SerialData.write(bytes(i, "utf-8"))
-                    time.sleep(0.5)
                 
                 if RegisterMode == 0:
                     InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
@@ -207,46 +202,50 @@ def MainLoop():
                     InsertThis1.Add(["timestamp",str(int(time.time()))])
                     EXECUTE(InsertThis1.PrepareStmt(table="records"))
                     InsertThis1.ClearThis()
+                    stringToSend = "!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]) + ","+str(Registered_guest[0][1]) + " timed in the room@_"
+                    for i in divide(stringToSend,20):
+                        print(i)
+                        SerialData.write(bytes(i, "utf-8"))
+                        time.sleep(0.5)
             elif len(Parsed) < 7:
                 eel.RFID_Read(RFID_Reading + " " + str(Registered_guest[0][1]) + " of room id = " + (Room_id) + " RFID Accept")
-                print("!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]))
-                print(","+str(Registered_guest[0][1]) + " timed in the room@_")
                 SerialData.write(bytes("1", "utf-8"))
                 time.sleep(5)
-                stringToSend = "!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]) + ","+str(Registered_guest[0][1]) + " timed out the room@_"
-                for i in divide(stringToSend,20):
-                    print(i)
-                    SerialData.write(bytes(i, "utf-8"))
-                    time.sleep(0.5)
+                
                 if RegisterMode == 0:
                     InsertThis1.Add(["guest_id",str(Registered_guest[0][0])])
                     InsertThis1.Add(["room_id",str(Room_id)])
                     InsertThis1.Add(["action","Time Out"])
                     InsertThis1.Add(["timestamp",str(int(time.time()))])
                     EXECUTE(InsertThis1.PrepareStmt(table="records"))
-                InsertThis1.ClearThis()
+                    InsertThis1.ClearThis()
+                    stringToSend = "!"+str(Registered_guest[0][12])+"@Hello "+str(Registered_guest[0][11]) + ","+str(Registered_guest[0][1]) + " timed out the room@_"
+                    for i in divide(stringToSend,20):
+                        print(i)
+                        SerialData.write(bytes(i, "utf-8"))
+                        time.sleep(0.5)
             else:
                 SerialData.write(bytes("2", "utf-8"))
                 eel.RFID_Read(RFID_Reading + " RFID Reject")
+                if RegisterMode == 0:
+                    time.sleep(1)
+                    SerialData.write(bytes("!"+str(AdminInfo[2])+"@Hello "+str(AdminInfo[0]), "utf-8"))
+                    time.sleep(2)
+                    SerialData.write(bytes(",Someone enteres room id="+str(Room_id), "utf-8"))
+                    time.sleep(2)
+                    SerialData.write(bytes(" with an invalid card@_", "utf-8"))
+                
+        else:
+            eel.RFID_Read(RFID_Reading + " RFID but room id = " + Room_id + " does not have a guest.")
+            SerialData.write(bytes("2", "utf-8"))
+            if RegisterMode == 0:
                 time.sleep(1)
                 SerialData.write(bytes("!"+str(AdminInfo[2])+"@Hello "+str(AdminInfo[0]), "utf-8"))
                 time.sleep(2)
                 SerialData.write(bytes(",Someone enteres room id="+str(Room_id), "utf-8"))
                 time.sleep(2)
                 SerialData.write(bytes(" with an invalid card@_", "utf-8"))
-                
-        else:
-            eel.RFID_Read(RFID_Reading + " RFID but room id = " + Room_id + " does not have a guest.")
-            SerialData.write(bytes("2", "utf-8"))
-            time.sleep(1)
-            SerialData.write(bytes("!"+str(AdminInfo[2])+"@Hello "+str(AdminInfo[0]), "utf-8"))
-            time.sleep(2)
-            SerialData.write(bytes(",Someone enteres room id="+str(Room_id), "utf-8"))
-            time.sleep(2)
-            SerialData.write(bytes(" with an invalid card@_", "utf-8"))
-            print("sent")
-            
-            
+                        
     threading.Timer(0.1,MainLoop,[]).start()
     
 

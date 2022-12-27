@@ -109,6 +109,10 @@ tbody tr:nth-child(odd){
   background-color: rgb(220, 220, 220);
 }
 
+#welcome {
+    padding-left: 10px;
+}
+
 .Panel {
     background-color: white;
     border: 1px solid #888;
@@ -262,7 +266,7 @@ tbody tr:nth-child(odd){
 
 .tbl50 {
     /* overflow-y: scroll; */
-    height: 59vh;
+    /* height: 100%; */
 }
 
 .tbl51 {
