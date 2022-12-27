@@ -551,7 +551,7 @@ function validatePeople(n) {
 }
 
 function validateBTHY(n) {
-    alert(n)
+    // alert(n)
     var dateformat = /^\d{4}-\d{2}-\d{2}$/;
     if(!dateformat.test(n)) {
         return false;
@@ -591,6 +591,7 @@ function Save_Guest_Info() {
         document.getElementById("Tb1").disabled = false;
         document.getElementById("Tb2").disabled = false;
         document.getElementById("Tb3").disabled = false;
+        DialogBox("Information", "Guest information has been updated.");
     }
     else if (globalToReadRFID == 1) {
         eel.PY_UpdateGuest(gid, gna, gem, gnu, gad, grf,pcnt, bthy, gec, gecn)
@@ -600,6 +601,7 @@ function Save_Guest_Info() {
         document.getElementById("Tb1").disabled = false;
         document.getElementById("Tb2").disabled = false;
         document.getElementById("Tb3").disabled = false;
+        DialogBox("Information", "Guest information has been updated.");
     }
 }
 
